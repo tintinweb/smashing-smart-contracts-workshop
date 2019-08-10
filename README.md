@@ -30,13 +30,6 @@ Install [Mythril](https://github.com/ConsenSys/mythril) from Pypi:
 $ pip3 install mythril
 ```
 
-Make sure you have Mythril v0.21.15 or higher installed.
-
-```bash
-$ myth version
-Mythril version v0.21.15
-```
-
 If you can't get this to work you can use the Docker image instead (see [docs](https://mythril-classic.readthedocs.io/en/master/installation.html), note however that the below tools won't work then.
 
 Mythril uses solc to compile Solidity files, so you'll need to [install that as well](https://solidity.readthedocs.io/en/latest/installing-solidity.html#binary-packages).
@@ -204,6 +197,34 @@ On Ubuntu you can install them with:
 ```console
 $ sudo apt install libssl-dev
 ```
+
+### mythril - Solc has experienced a fatal error (code 1).
+
+This error may occur if the solidity compiler `solc` installed in path is incompatible with the provided source code (e.g. installed version is `0.5.x` but smart contract requires `<=0.4.x`)
+```
+$ myth analyze <contract_0_4_x.sol>
+
+mythril.interfaces.cli [ERROR]: Solc has experienced a fatal error (code 1).
+
+code/RandomNumber.sol:8:1: Error: Source file requires different compiler version (current compiler is 0.5.3+commit.10d17f24.Darwin.appleclang - note that nightly builds are considered to be strictly less than the released version
+contract GuessTheRandomNumberChallenge {
+^------^
+
+SolidityVersionMismatch: Try adding the option "--solv <version_number>"
+```
+
+There's a few options how to resolve this:
+
+* Either try using `--solv <solidity_version>` as suggested
+* Or force mythril to use a user-provide `solc` binary to comiple the code as follows:
+
+```console
+$ export SOLC=/usr/local/bin/solc-0.4.26
+$ myth analyze <contract_0_4_x.sol>
+```
+
+[Solc compiler releases](https://github.com/ethereum/solidity/releases)
+
 
 ## What to Do Next
 
